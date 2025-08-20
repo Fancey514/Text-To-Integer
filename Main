@@ -1,0 +1,80 @@
+// Goal is to take a value written out and convert it to an integer
+
+import java.util.StringTokenizer;
+import java.util.Scanner;
+
+public class Main {
+  String inputText, appendText, outputText = "", temp, previousZero = "N/A";
+  int i = 0;
+  boolean removeZero = false;
+  
+  public static void main(String args[]) {
+    
+    Scanner inText = new Scanner(System.in);
+    System.out.println("Please type a number.");
+    inputText = inText.nextLine();
+      
+    StringTokenizer newToken = new StringTokenizer(inputText, " ");
+    while (newToken.hasNext()) {
+        i++;
+        temp = newToken.next();
+        if (!previousZero.equals("N/A")) {
+            removeZero = doubleOAfter()
+            // TODO: Remove the 0 at the end of the outputText if the next number isn't a double 0 value
+        }
+        outputText += append(temp);
+    }
+
+    System.out.println(outputText);
+  }
+  
+  public String outValue(String textValue) {
+      if (previousZero.equals("N/A")) {
+          if (textValue.equals("twenty")) {
+              previousZero = "20";
+              textValue = "20";
+          }
+          if (textValue.equals("thirty")) {
+              previousZero = "30";
+              textValue = "30";
+          }
+          if (textValue.equals("forty")) {
+              previousZero = "40";
+              textValue = "40";
+          }
+          if (textValue.equals("fifty")) {
+              previousZero = "50";
+              textValue = "50";
+          }
+          if (textValue.equals("sixty")) {
+              previousZero = "60";
+              textValue = "60";
+          }
+          if (textValue.equals("seventy")) {
+              previousZero = "70";
+              textValue = "70";
+          }
+          if (textValue.equals("eighty")) {
+              previousZero = "80";
+              textValue = "80";
+          }
+          if (textValue.equals("ninety")) {
+              previousZero = "90";
+              textValue = "90";
+          }
+          if (textValue.equals("million") || textValue.equals("thousand") || textValue.equals("hundred")) {
+              previousZero = "00";
+              textValue = "00";
+          }
+      }
+      else {
+          // TODO: When there's a previous value ending in 0 (20, 30, 40, etc.)
+      }
+      return textValue;
+  }
+  
+  public boolean doubleOAfter() {
+      // TODO: Set a separate Tokenizer to check if the word after a single-digit word isn't a double 
+      // 0 word (hundred, thousand, or million)
+  }
+}
