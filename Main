@@ -4,77 +4,150 @@ import java.util.StringTokenizer;
 import java.util.Scanner;
 
 public class Main {
-  String inputText, appendText, outputText = "", temp, previousZero = "N/A";
-  int i = 0;
-  boolean removeZero = false;
+  static String[] textArray = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", 
+      "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
+      "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion"};
+  static String[] numericalArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", 
+      "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80-", "90", "00", ",", ",", ","};
+  static String inputText, appendText, temp, tempVerify, previousZero = "N/A", errorMessage, previousVerify;
+  static int i = 0;
+  static boolean removeZero = false, continueConvert = true;
+  
   
   public static void main(String args[]) {
-    
+    StringBuilder  outputText = new StringBuilder("");
     Scanner inText = new Scanner(System.in);
     System.out.println("Please type a number.");
     inputText = inText.nextLine();
-      
-    StringTokenizer newToken = new StringTokenizer(inputText, " ");
-    while (newToken.hasNext()) {
-        i++;
-        temp = newToken.next();
-        if (!previousZero.equals("N/A")) {
-            removeZero = doubleOAfter()
-            // TODO: Remove the 0 at the end of the outputText if the next number isn't a double 0 value
+    inputText = inputText.toLowerCase();
+    
+    StringTokenizer verifyToken = new StringTokenizer(inputText, " ");
+    while (verifyToken.hasMoreTokens()) {
+        boolean numFound = false;
+        tempVerify = verifyToken.nextToken();
+        for (int l = 0; l < textArray.length; l++) {
+            if (tempVerify.equals(textArray[l])) {
+                numFound = true;
+            }
+            if (l < 27 && (tempVerify.equals(textArray[l]) && tempVerify.equals(previousVerify))) {
+                errorMessage = "A triple zero value was duplicated.";
+                continueConvert = false;
+                
+            }
         }
-        outputText += append(temp);
+        if (!numFound) {
+            errorMessage = "The number you typed is not valid";
+            continueConvert = false;
+        }
+        if (!continueConvert) {
+            break;
+        }
+        previousVerify = tempVerify;
     }
-
-    System.out.println(outputText);
+    
+    if (continueConvert) {
+        StringTokenizer newToken = new StringTokenizer(inputText, " ");
+        while (newToken.hasMoreTokens()) {
+            i++;
+            temp = newToken.nextToken();
+            if (!previousZero.equals("N/A")) {
+                if (previousZero.equals("00")) {
+                    int j = 0, loopNum = 0;
+                    while (loopNum == 0) {
+                        if (temp.equals(textArray[j])) {
+                            if (j < 9) {
+                                previousZero = "N/A";
+                                removeZero = doubleOAfter();
+                                if (removeZero) {
+                                    outputText.delete(outputText.length() - 1, outputText.length());
+                                }
+                            }
+                            else if (j > 8 && j < 27) {
+                                if (j == 9 || j > 18) {
+                                    previousZero = numericalArray[j];
+                                }
+                                outputText.delete(outputText.length() - 2, outputText.length());
+                            }
+                            else if (j > 27) {
+                                previousZero = numericalArray[j];
+                            }
+                            temp = numericalArray[j];
+                            loopNum++;
+                        }
+                    }
+                }
+                else if (previousZero.equals(",")) {
+                    int j = 0, loopNum = 0;
+                    while (loopNum == 0) {
+                        if (temp.equals(textArray[j])) {
+                            if (j < 9) {
+                                previousZero = "N/A";
+                                removeZero = doubleOAfter();
+                                if (removeZero) {
+                                    outputText.append("00");
+                                }
+                            }
+                            else if (j > 8 && j < 27) {
+                                if (j == 9 || j < 18) {
+                                    previousZero = numericalArray[j];
+                                }
+                                outputText.append("0");
+                            }
+                            temp = numericalArray[j];
+                            loopNum++;
+                        }
+                    }
+                }
+                else {
+                    removeZero = doubleOAfter();
+                    int loopNum = 0, j = 0;
+                    if (removeZero) {
+                        outputText.delete(outputText.length() - 1, outputText.length());
+                    }
+                    while (loopNum == 0) {
+                        if (temp.equals(textArray[j])) {
+                            temp = numericalArray[j];
+                            loopNum++;
+                        }
+                    }
+                }
+            }
+            else {
+                int loopNum = 0, j = 0;
+                while (loopNum == 0) {
+                    if (temp.equals(textArray[j])) {
+                        temp = numericalArray[j];
+                        if  (j == 9 || j > 18 && j < 28) {
+                            previousZero = numericalArray[j];
+                        }
+                        loopNum++;
+                    }
+                }
+            }
+            outputText.append(temp);
+            System.out.println(outputText);
+        }
+    
+        System.out.println(outputText);
+    }
+    else {
+        System.out.println(errorMessage);
+    }
   }
   
-  public String outValue(String textValue) {
-      if (previousZero.equals("N/A")) {
-          if (textValue.equals("twenty")) {
-              previousZero = "20";
-              textValue = "20";
-          }
-          if (textValue.equals("thirty")) {
-              previousZero = "30";
-              textValue = "30";
-          }
-          if (textValue.equals("forty")) {
-              previousZero = "40";
-              textValue = "40";
-          }
-          if (textValue.equals("fifty")) {
-              previousZero = "50";
-              textValue = "50";
-          }
-          if (textValue.equals("sixty")) {
-              previousZero = "60";
-              textValue = "60";
-          }
-          if (textValue.equals("seventy")) {
-              previousZero = "70";
-              textValue = "70";
-          }
-          if (textValue.equals("eighty")) {
-              previousZero = "80";
-              textValue = "80";
-          }
-          if (textValue.equals("ninety")) {
-              previousZero = "90";
-              textValue = "90";
-          }
-          if (textValue.equals("million") || textValue.equals("thousand") || textValue.equals("hundred")) {
-              previousZero = "00";
-              textValue = "00";
-          }
+  public static boolean doubleOAfter() {
+      StringTokenizer doubleO = new StringTokenizer(inputText, " ");
+      String doubleTemp = "";
+      
+      for (int k = 0; k <= i + 1; i++) {
+          doubleTemp = doubleO.nextToken();
+      }
+      if (doubleTemp.equals("hundred")) {
+          removeZero = false;
       }
       else {
-          // TODO: When there's a previous value ending in 0 (20, 30, 40, etc.)
+          removeZero = true;
       }
-      return textValue;
-  }
-  
-  public boolean doubleOAfter() {
-      // TODO: Set a separate Tokenizer to check if the word after a single-digit word isn't a double 
-      // 0 word (hundred, thousand, or million)
+      return removeZero;
   }
 }
