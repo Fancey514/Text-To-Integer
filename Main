@@ -87,10 +87,11 @@ public class Main {
                                 previousZero = "N/A";
                                 if (newToken.hasMoreTokens()) {
                                     removeZero = doubleOAfter(i);
-                                    if (!removeZero) {
-                                        outputText.append("00");
-                                    }
                                 }
+                                if (removeZero) {
+                                    outputText.append("00");
+                                }
+                                
                             }
                             else if (j > 8 && j < 27) {
                                 if (j == 9 || j < 18) {
@@ -131,7 +132,7 @@ public class Main {
                 while (loopNum == 0) {
                     if (temp.equals(textArray[j])) {
                         temp = numericalArray[j];
-                        if  (j == 9 || j > 18 && j < 28) {
+                        if  (j == 9 || j > 18) {
                             previousZero = temp;
                         }
                         loopNum++;
@@ -140,7 +141,7 @@ public class Main {
                 }
             }
             outputText.append(temp);
-    
+            System.out.println(outputText);
         }
     
         System.out.println(outputText);
@@ -153,8 +154,9 @@ public class Main {
     public static boolean doubleOAfter(int i) {
         StringTokenizer doubleO = new StringTokenizer(inputText, " ");
         String doubleTemp = "";
-        for (int k = 0; k <= i + 1; k++) {
+        for (int k = 0; k <= i; k++) {
             doubleTemp = doubleO.nextToken();
+            System.out.println(doubleTemp);
         }
         if (doubleTemp.equals("hundred")) {
             removeZero = false;
