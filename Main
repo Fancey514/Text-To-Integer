@@ -49,6 +49,7 @@ public class Main {
         StringTokenizer newToken = new StringTokenizer(inputText, " ");
         while (newToken.hasMoreTokens()) {
             i++;
+            removeZero = true;
             temp = newToken.nextToken();
             if (!previousZero.equals("N/A")) {
                 if (previousZero.equals("00")) {
@@ -59,9 +60,9 @@ public class Main {
                                 previousZero = "N/A";
                                 if (newToken.hasMoreTokens()) {
                                     removeZero = doubleOAfter(i);
-                                    if (removeZero) {
-                                        outputText.delete(outputText.length() - 1, outputText.length());
-                                    }
+                                }
+                                if (removeZero) {
+                                    outputText.delete(outputText.length() - 1, outputText.length());
                                 }
                             }
                             else if (j > 8 && j < 27) {
@@ -141,7 +142,6 @@ public class Main {
                 }
             }
             outputText.append(temp);
-            System.out.println(outputText);
         }
     
         System.out.println(outputText);
@@ -156,7 +156,6 @@ public class Main {
         String doubleTemp = "";
         for (int k = 0; k <= i; k++) {
             doubleTemp = doubleO.nextToken();
-            System.out.println(doubleTemp);
         }
         if (doubleTemp.equals("hundred")) {
             removeZero = false;
