@@ -11,7 +11,7 @@ public class Main {
       "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80-", "90", "00", ",", ",", ","};
   static String inputText, appendText, temp, tempVerify, previousZero = "N/A", errorMessage, previousVerify;
   static int i = 0;
-  static boolean removeZero = false, continueConvert = true;
+  static boolean removeZero = true, continueConvert = true;
   
   
   public static void main(String args[]) {
@@ -57,9 +57,11 @@ public class Main {
                         if (temp.equals(textArray[j])) {
                             if (j < 9) {
                                 previousZero = "N/A";
-                                removeZero = doubleOAfter();
-                                if (removeZero) {
-                                    outputText.delete(outputText.length() - 1, outputText.length());
+                                if (newToken.hasMoreTokens()) {
+                                    removeZero = doubleOAfter(i);
+                                    if (removeZero) {
+                                        outputText.delete(outputText.length() - 1, outputText.length());
+                                    }
                                 }
                             }
                             else if (j > 8 && j < 27) {
@@ -74,6 +76,7 @@ public class Main {
                             temp = numericalArray[j];
                             loopNum++;
                         }
+                        j++;
                     }
                 }
                 else if (previousZero.equals(",")) {
@@ -82,9 +85,11 @@ public class Main {
                         if (temp.equals(textArray[j])) {
                             if (j < 9) {
                                 previousZero = "N/A";
-                                removeZero = doubleOAfter();
-                                if (removeZero) {
-                                    outputText.append("00");
+                                if (newToken.hasMoreTokens()) {
+                                    removeZero = doubleOAfter(i);
+                                    if (!removeZero) {
+                                        outputText.append("00");
+                                    }
                                 }
                             }
                             else if (j > 8 && j < 27) {
@@ -96,19 +101,28 @@ public class Main {
                             temp = numericalArray[j];
                             loopNum++;
                         }
+                        j++;
                     }
                 }
                 else {
-                    removeZero = doubleOAfter();
-                    int loopNum = 0, j = 0;
-                    if (removeZero) {
-                        outputText.delete(outputText.length() - 1, outputText.length());
+                    if (newToken.hasMoreTokens() && (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion"))) {
+                        removeZero = doubleOAfter(i);
                     }
+                    if (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion")) {  
+                        if (removeZero) {
+                            outputText.delete(outputText.length() - 1, outputText.length());
+                        }
+                    }
+                    int loopNum = 0, j = 0;
                     while (loopNum == 0) {
                         if (temp.equals(textArray[j])) {
                             temp = numericalArray[j];
+                            if (j > 8) {
+                                previousZero = temp;
+                            }
                             loopNum++;
                         }
+                        j++;
                     }
                 }
             }
@@ -118,14 +132,15 @@ public class Main {
                     if (temp.equals(textArray[j])) {
                         temp = numericalArray[j];
                         if  (j == 9 || j > 18 && j < 28) {
-                            previousZero = numericalArray[j];
+                            previousZero = temp;
                         }
                         loopNum++;
                     }
+                    j++;
                 }
             }
             outputText.append(temp);
-            System.out.println(outputText);
+    
         }
     
         System.out.println(outputText);
@@ -135,19 +150,18 @@ public class Main {
     }
   }
   
-  public static boolean doubleOAfter() {
-      StringTokenizer doubleO = new StringTokenizer(inputText, " ");
-      String doubleTemp = "";
-      
-      for (int k = 0; k <= i + 1; i++) {
-          doubleTemp = doubleO.nextToken();
-      }
-      if (doubleTemp.equals("hundred")) {
-          removeZero = false;
-      }
-      else {
-          removeZero = true;
-      }
-      return removeZero;
-  }
+    public static boolean doubleOAfter(int i) {
+        StringTokenizer doubleO = new StringTokenizer(inputText, " ");
+        String doubleTemp = "";
+        for (int k = 0; k <= i + 1; k++) {
+            doubleTemp = doubleO.nextToken();
+        }
+        if (doubleTemp.equals("hundred")) {
+            removeZero = false;
+        }
+        else {
+            removeZero = true;
+        }
+        return removeZero;
+    }
 }
