@@ -8,7 +8,7 @@ public class Main {
       "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
       "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion"};
   static String[] numericalArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", 
-      "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80-", "90", "00", ",", ",", ","};
+      "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80", "90", "00", ",", ",", ","};
   static String inputText, appendText, temp, tempVerify, previousZero = "N/A", errorMessage, previousVerify;
   static int i = 0;
   static boolean removeZero = true, continueConvert = true;
@@ -95,7 +95,7 @@ public class Main {
                                 
                             }
                             else if (j > 8 && j < 27) {
-                                if (j == 9 || j < 18) {
+                                if (j > 18) {
                                     previousZero = numericalArray[j];
                                 }
                                 outputText.append("0");
@@ -110,17 +110,20 @@ public class Main {
                     if (newToken.hasMoreTokens() && (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion"))) {
                         removeZero = doubleOAfter(i);
                     }
-                    if (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion")) {  
-                        if (removeZero) {
-                            outputText.delete(outputText.length() - 1, outputText.length());
-                        }
+                    
+                    if (removeZero) {
+                        outputText.delete(outputText.length() - 1, outputText.length());
                     }
+                
                     int loopNum = 0, j = 0;
                     while (loopNum == 0) {
                         if (temp.equals(textArray[j])) {
                             temp = numericalArray[j];
                             if (j > 8) {
                                 previousZero = temp;
+                            }
+                            else {
+                                previousZero = "N/A";
                             }
                             loopNum++;
                         }
@@ -142,6 +145,7 @@ public class Main {
                 }
             }
             outputText.append(temp);
+        
         }
     
         System.out.println(outputText);
