@@ -1,4 +1,5 @@
-// Goal is to take a value written out and convert it to an integer
+// Take a value written out and convert it to an integer
+// Created by Jamie Fancey
 
 // Import tokenizer and scanner
 import java.util.StringTokenizer;
@@ -15,18 +16,22 @@ public class Main {
           "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80", "90", "00", ",", ",", ","};
         String inputText, appendText, temp, tempVerify = "", previousZero = "N/A", errorMessage = "", previousVerify = "";
         int i = 0;
-        boolean removeZero = true, continueConvert = true, billionZeros = false, millionZeros = false;  
+        boolean removeZero = true, continueConvert = true, billionZeros = false, millionZeros = false, extraZeros = false, zeroGap = false;  
         
-        StringBuilder  outputText = new StringBuilder("");                        // Set String for output
-        Scanner inText = new Scanner(System.in);                                  // Set scanner for input
-        System.out.println("Please type a number. Ex: one hundred fifty two");    // Ask user to type out a number in text
-        inputText = inText.nextLine();                                            // Take in user's response
-        inputText = inputText.toLowerCase();                                      // Set text to lowercase for error-checking purposes
+        StringBuilder  outputText = new StringBuilder("");                                      // Set String for output
+        Scanner inText = new Scanner(System.in);                                                // Set scanner for input
+        System.out.println("Please type a number. Ex: one thousand two hundred fifty two");     // Ask user to type out a number in text
+        inputText = inText.nextLine();                                                          // Take in user's response
+        inputText = inputText.toLowerCase();                                                    // Set text to lowercase for error-checking purposes
         
         StringTokenizer verifyToken = new StringTokenizer(inputText, " ");                                  // Set tokenizer to stop at each space for verifying
         while (verifyToken.hasMoreTokens()) {                                                               // Start a loop to verify entry
             boolean numFound = false;                                                                       // Set a boolean to make sure the token matches a number word
             tempVerify = verifyToken.nextToken();                                                           // Assign the next token to the temporary variable
+            if (tempVerify.equals(",")) {                                                                   // Verify no commas were entered
+                errorMessage = "No commas, please.";                                                        // Update errorMessage
+                continueConvert = false;                                                                    // Set continueConvert to false
+            }
             for (int l = 0; l < textArray.length; l++) {                                                    // Start a for loop to go through the textArray to match the token
                 if (tempVerify.equals(textArray[l])) {
                     numFound = true;                                                                        // Set boolean to true if the word has a match
@@ -67,11 +72,15 @@ public class Main {
                     millionZeros = false;                                                                   // Remove million flag
                 }
                 else if (temp.equals("hundred")) {
-                    if (billionZeros) {                                                                     // If the current word is hundred, check if billion flag is true
-                        outputText.insert(outputText.indexOf(",") + 1, "000,000,");                         // If true, add "000,000," after the comma
+                    extraZeros = addExtras(i, inputText);
+                    zeroGap = addGap(i, inputText);
+                    if (billionZeros && extraZeros) {                                                       // If the current word is hundred, check if billion flag is true
+                        if (!zeroGap) {
+                            outputText.insert(outputText.indexOf(",") + 1, "000,000,");                     // If true, add "000,000," after the comma
+                        }
                     }
-                    else if (millionZeros) {                                                                // Otherwise, if million is flagged as true
-                        outputText.insert(outputText.lastIndexOf(",") + 1, "000,");                             // Insert "000," at the comma value
+                    else if (millionZeros && extraZeros) {                                                  // Otherwise, if million is flagged as true
+                        outputText.insert(outputText.lastIndexOf(",") + 1, "000,");                         // Insert "000," at the comma value
                     }
                 }
                 if (!previousZero.equals("N/A")) {                                                          // Check if previousZero has anything other than "N/A" assigned to it
@@ -103,8 +112,8 @@ public class Main {
                             j++;                                                                            // Increase j if the text value wasn't matched
                         }
                     }
-                    else if (previousZero.equals(",")) {
-                        int j = 0, loopNum = 0;
+                    else if (previousZero.equals(",")) {                                                    // Check if previousZero is a comma value
+                        int j = 0, loopNum = 0;                                                             // Set variables to control the while loop
                         while (loopNum == 0) {
                             if (temp.equals(textArray[j])) {
                                 if (j < 9) {
@@ -211,5 +220,52 @@ public class Main {
             removeZero = true;
         }
         return removeZero;
+    }
+    
+    public static boolean addExtras(int i, String inText) {
+        boolean extraZeros = true, billionVal = false, millionVal = false, thouVal = false;
+        StringTokenizer zeroToken = new StringTokenizer(inText, " ");
+        String zeroTemp = "";
+        int k = 0;
+        while (zeroToken.hasMoreTokens() && (k <= i + 3)) {
+            zeroTemp = zeroToken.nextToken();
+            if (zeroTemp.equals("billion")) {
+                billionVal = true;
+            }
+            else if (zeroTemp.equals("million")) {
+                millionVal = true;
+            }
+            else if (zeroTemp.equals("thousand")) {
+                thouVal = true;
+                billionVal = false;
+            }
+        }
+        if ((billionVal && millionVal) || (millionVal && thouVal)) {
+            extraZeros = false;
+        }
+        return extraZeros;
+    }
+    
+    public static boolean addGap(int i, String inText) {
+        boolean zeroGap = false, billionVal = false, millionVal = false, thouVal = false;
+        StringTokenizer gapToken = new StringTokenizer(inText, " ");
+        String gapTemp = "";
+        int k = 0;
+        while (gapToken.hasMoreTokens() && (k <= i + 3)) {
+            gapTemp = gapToken.nextToken();
+            if (gapTemp.equals("billion")) {
+                billionVal = true;
+            }
+            else if (gapTemp.equals("million")) {
+                millionVal = true;
+            }
+            else if (gapTemp.equals("thousand")) {
+                thouVal = true;
+            }
+        }
+        if (billionVal && !millionVal && thouVal) {
+            zeroGap = true;
+        }
+        return zeroGap;
     }
 }
