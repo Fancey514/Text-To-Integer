@@ -53,25 +53,25 @@ public class Main {
                 removeZero = true;                                                                          // Set removeZero to true by default at the beginnning of the loop in case it's false at some point before it loops
                 temp = newToken.nextToken();                                                                // Assign the token to the temporary variable
                 if (temp.equals("billion")) {
-                    billionZeros = true;
+                    billionZeros = true;                                                                    // Flag that billion was the last comma value
                 }
                 else if (temp.equals("million")) {
-                    billionZeros = false;
-                    millionZeros = true;
+                    billionZeros = false;                                                                   // Remove billion flag
+                    millionZeros = true;                                                                    // Flag million as the last comma value
                 }
                 else if (temp.equals("thousand")) {
-                    if (billionZeros) {
-                        outputText.insert(outputText.indexOf(",") + 1, "000,");
+                    if (billionZeros) {                                                                     // If the current word is thousand, check if the billion flag is true
+                        outputText.insert(outputText.indexOf(",") + 1, "000,");                             // If true, add "000," after the comma
                     }
-                    billionZeros = false;
-                    millionZeros = false;
+                    billionZeros = false;                                                                   // Remove billion flag
+                    millionZeros = false;                                                                   // Remove million flag
                 }
                 else if (temp.equals("hundred")) {
-                    if (billionZeros) {
-                        outputText.insert(outputText.indexOf(",") + 1, "000,000,");
+                    if (billionZeros) {                                                                     // If the current word is hundred, check if billion flag is true
+                        outputText.insert(outputText.indexOf(",") + 1, "000,000,");                         // If true, add "000,000," after the comma
                     }
-                    else if (millionZeros) {
-                        outputText.insert(outputText.indexOf(",") + 1, "000,");
+                    else if (millionZeros) {                                                                // Otherwise, if million is flagged as true
+                        outputText.insert(outputText.lastIndexOf(",") + 1, "000,");                             // Insert "000," at the comma value
                     }
                 }
                 if (!previousZero.equals("N/A")) {                                                          // Check if previousZero has anything other than "N/A" assigned to it
@@ -113,10 +113,10 @@ public class Main {
                                         removeZero = doubleOAfter(i, inputText);
                                     }
                                     if (removeZero) {
-                                        if (billionZeros) {
+                                        if (billionZeros && !newToken.hasMoreTokens()) {
                                             outputText.append("000,000,00");
                                         }
-                                        else if (millionZeros) {
+                                        else if (millionZeros && !newToken.hasMoreTokens()) {
                                             outputText.append("000,00");
                                         }
                                         else {
