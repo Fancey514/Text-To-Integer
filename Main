@@ -7,154 +7,195 @@ import java.util.Scanner;
 public class Main {
     public static void main(String args[]) {
 
-    // Declare and initialize arrays and variables
-    String[] textArray = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", 
-      "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
-      "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion"};
-    String[] numericalArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", 
-      "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80", "90", "00", ",", ",", ","};
-    String inputText, appendText, temp, tempVerify = "", previousZero = "N/A", errorMessage = "", previousVerify = "";
-    int i = 0;
-    boolean removeZero = true, continueConvert = true;  
-    
-    StringBuilder  outputText = new StringBuilder("");                        // Set String for output
-    Scanner inText = new Scanner(System.in);                                  // Set scanner for input
-    System.out.println("Please type a number. Ex: one hundred fifty two");    // Ask user to type out a number in text
-    inputText = inText.nextLine();                                            // Take in user's response
-    inputText = inputText.toLowerCase();                                      // Set text to lowercase for error-checking purposes
-    
-    StringTokenizer verifyToken = new StringTokenizer(inputText, " ");                                  // Set tokenizer to stop at each space for verifying
-    while (verifyToken.hasMoreTokens()) {                                                               // Start a loop to verify entry
-        boolean numFound = false;                                                                       // Set a boolean to make sure the token matches a number word
-        tempVerify = verifyToken.nextToken();                                                           // Assign the next token to the temporary variable
-        for (int l = 0; l < textArray.length; l++) {                                                    // Start a for loop to go through the textArray to match the token
-            if (tempVerify.equals(textArray[l])) {
-                numFound = true;                                                                        // Set boolean to true if the word has a match
+        // Declare and initialize arrays and variables
+        String[] textArray = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", 
+          "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", 
+          "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion"};
+        String[] numericalArray = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", 
+          "16", "17", "18", "19", "20", "30", "40", "50", "60", "70", "80", "90", "00", ",", ",", ","};
+        String inputText, appendText, temp, tempVerify = "", previousZero = "N/A", errorMessage = "", previousVerify = "";
+        int i = 0;
+        boolean removeZero = true, continueConvert = true, billionZeros = false, millionZeros = false;  
+        
+        StringBuilder  outputText = new StringBuilder("");                        // Set String for output
+        Scanner inText = new Scanner(System.in);                                  // Set scanner for input
+        System.out.println("Please type a number. Ex: one hundred fifty two");    // Ask user to type out a number in text
+        inputText = inText.nextLine();                                            // Take in user's response
+        inputText = inputText.toLowerCase();                                      // Set text to lowercase for error-checking purposes
+        
+        StringTokenizer verifyToken = new StringTokenizer(inputText, " ");                                  // Set tokenizer to stop at each space for verifying
+        while (verifyToken.hasMoreTokens()) {                                                               // Start a loop to verify entry
+            boolean numFound = false;                                                                       // Set a boolean to make sure the token matches a number word
+            tempVerify = verifyToken.nextToken();                                                           // Assign the next token to the temporary variable
+            for (int l = 0; l < textArray.length; l++) {                                                    // Start a for loop to go through the textArray to match the token
+                if (tempVerify.equals(textArray[l])) {
+                    numFound = true;                                                                        // Set boolean to true if the word has a match
+                }
+                if (l < 27 && (tempVerify.equals(textArray[l]) && tempVerify.equals(previousVerify))) {     // Check that the current token doesn't match the previous token
+                    errorMessage = "No numbers back-to-back.";                                              // Set the errorMessage variable if it does
+                    continueConvert = false;                                                                // Set the continueConvert boolean to false so it doesn't attempt to convert to a number                
+                }
             }
-            if (l < 27 && (tempVerify.equals(textArray[l]) && tempVerify.equals(previousVerify))) {     // Check that the current token doesn't match the previous token
-                errorMessage = "No numbers back-to-back.";                                              // Set the errorMessage variable if it does
-                continueConvert = false;                                                                // Set the continueConvert boolean to false so it doesn't attempt to convert to a number                
+            if (!numFound) {
+                errorMessage = "The entry is not a valid number.";                                          // If the number is not found, set the errrorMessage variable
+                continueConvert = false;                                                                    // Set the continueConvert boolean to false so it doesn't attempt to convert to a number
             }
+            if (!continueConvert) {
+                break;                                                                                      // Break the loop if it can't be converted
+            }
+            previousVerify = tempVerify;                                                                    // Set the previous value to the current value before the loop restarts
         }
-        if (!numFound) {
-            errorMessage = "The entry is not a valid number.";                                          // If the number is not found, set the errrorMessage variable
-            continueConvert = false;                                                                    // Set the continueConvert boolean to false so it doesn't attempt to convert to a number
-        }
-        if (!continueConvert) {
-            break;                                                                                      // Break the loop if it can't be converted
-        }
-        previousVerify = tempVerify;                                                                    // Set the previous value to the current value before the loop restarts
-    }
-    
-    if (continueConvert) {                                                                              // If the string passes verification, start converting
-        StringTokenizer newToken = new StringTokenizer(inputText, " ");                                 // Set a tokenizer
-        while (newToken.hasMoreTokens()) {                                                              // Start a loop to process each number
-            i++;                                                                                        // Iterate i
-            removeZero = true;                                                                          // Set removeZero to true by default at the beginnning of the loop in case it's false at some point before it loops
-            temp = newToken.nextToken();                                                                // Assign the token to the temporary variable
-            if (!previousZero.equals("N/A")) {                                                          // Check if previousZero has anything other than "N/A" assigned to it
-                if (previousZero.equals("00")) {                                                        // If previousZero is "00"
-                    int j = 0, loopNum = 0;                                                             // Declare and initialize integers j and loopNum
-                    while (loopNum == 0) {                                                              // Loop until loopNum is changed
-                        if (temp.equals(textArray[j])) {                                                // When temp matches the current element of textArray
-                            if (j < 9) {                                                                // If textArray[j] matches with a number fro, one to nine
-                                previousZero = "N/A";                                                   // Reasssign previousZero to "N/A"
-                                if (newToken.hasMoreTokens()) {                                         // As long as there's another word after the number
-                                    removeZero = doubleOAfter(i, inputText);                            // Call the doubleOAfter method and assign removeZero with the returned boolean
-                                }
-                                if (removeZero) {                                                       // If a zero needs to be removed
-                                    outputText.delete(outputText.length() - 1, outputText.length());    // Remove the zero
-                                }
-                            }
-                            else if (j > 8 && j < 27) {                                                 // If the value is higher than nine
-                                if (j > 18) {
-                                    previousZero = numericalArray[j];                                   // Reassign previousZero with the current numerical value
-                                }
-                                outputText.delete(outputText.length() - 2, outputText.length());        // Remove both zeros
-                            }
-                            else if (j > 27) {                                                          // If the value is either thousand, million, or billion
-                                previousZero = numericalArray[j];                                       // Reassign previousZero with the current numerical value
-                            }
-                            temp = numericalArray[j];                                                   // Reassign the temporary variable to the current numerical value
-                            loopNum++;                                                                  // increase the loopNum value to end the loop
-                        }
-                        j++;                                                                            // Increase j if the text value wasn't matched
+        
+        if (continueConvert) {                                                                              // If the string passes verification, start converting
+            StringTokenizer newToken = new StringTokenizer(inputText, " ");                                 // Set a tokenizer
+            while (newToken.hasMoreTokens()) {                                                              // Start a loop to process each number
+                i++;                                                                                        // Iterate i
+                removeZero = true;                                                                          // Set removeZero to true by default at the beginnning of the loop in case it's false at some point before it loops
+                temp = newToken.nextToken();                                                                // Assign the token to the temporary variable
+                if (temp.equals("billion")) {
+                    billionZeros = true;
+                }
+                else if (temp.equals("million")) {
+                    billionZeros = false;
+                    millionZeros = true;
+                }
+                else if (temp.equals("thousand")) {
+                    if (billionZeros) {
+                        outputText.insert(outputText.indexOf(",") + 1, "000,");
+                    }
+                    billionZeros = false;
+                    millionZeros = false;
+                }
+                else if (temp.equals("hundred")) {
+                    if (billionZeros) {
+                        outputText.insert(outputText.indexOf(",") + 1, "000,000,");
+                    }
+                    else if (millionZeros) {
+                        outputText.insert(outputText.indexOf(",") + 1, "000,");
                     }
                 }
-                else if (previousZero.equals(",")) {
-                    int j = 0, loopNum = 0;
-                    while (loopNum == 0) {
-                        if (temp.equals(textArray[j])) {
-                            if (j < 9) {
-                                previousZero = "N/A";
-                                if (newToken.hasMoreTokens()) {
-                                    removeZero = doubleOAfter(i, inputText);
+                if (!previousZero.equals("N/A")) {                                                          // Check if previousZero has anything other than "N/A" assigned to it
+                    if (previousZero.equals("00")) {                                                        // If previousZero is "00"
+                        int j = 0, loopNum = 0;                                                             // Declare and initialize integers j and loopNum
+                        while (loopNum == 0) {                                                              // Loop until loopNum is changed
+                            if (temp.equals(textArray[j])) {                                                // When temp matches the current element of textArray
+                                if (j < 9) {                                                                // If textArray[j] matches with a number fro, one to nine
+                                    previousZero = "N/A";                                                   // Reasssign previousZero to "N/A"
+                                    if (newToken.hasMoreTokens()) {                                         // As long as there's another word after the number
+                                        removeZero = doubleOAfter(i, inputText);                            // Call the doubleOAfter method and assign removeZero with the returned boolean
+                                    }
+                                    if (removeZero) {                                                       // If a zero needs to be removed
+                                        outputText.delete(outputText.length() - 1, outputText.length());    // Remove the zero
+                                    }
                                 }
-                                if (removeZero) {
-                                    outputText.append("00");
+                                else if (j > 8 && j < 27) {                                                 // If the value is higher than nine
+                                    if (j > 18) {
+                                        previousZero = numericalArray[j];                                   // Reassign previousZero with the current numerical value
+                                    }
+                                    outputText.delete(outputText.length() - 2, outputText.length());        // Remove both zeros
                                 }
-                                
+                                else if (j > 27) {                                                          // If the value is either thousand, million, or billion
+                                    previousZero = numericalArray[j];                                       // Reassign previousZero with the current numerical value
+                                }
+                                temp = numericalArray[j];                                                   // Reassign the temporary variable to the current numerical value
+                                loopNum++;                                                                  // increase the loopNum value to end the loop
                             }
-                            else if (j > 8 && j < 27) {
-                                if (j > 18) {
-                                    previousZero = numericalArray[j];
-                                }
-                                outputText.append("0");
-                            }
-                            temp = numericalArray[j];
-                            loopNum++;
+                            j++;                                                                            // Increase j if the text value wasn't matched
                         }
-                        j++;
+                    }
+                    else if (previousZero.equals(",")) {
+                        int j = 0, loopNum = 0;
+                        while (loopNum == 0) {
+                            if (temp.equals(textArray[j])) {
+                                if (j < 9) {
+                                    previousZero = "N/A";
+                                    if (newToken.hasMoreTokens()) {
+                                        removeZero = doubleOAfter(i, inputText);
+                                    }
+                                    if (removeZero) {
+                                        if (billionZeros) {
+                                            outputText.append("000,000,00");
+                                        }
+                                        else if (millionZeros) {
+                                            outputText.append("000,00");
+                                        }
+                                        else {
+                                            outputText.append("00");
+                                        }
+                                    }
+                                    
+                                }
+                                else if (j > 8 && j < 27) {
+                                    if (j > 18) {
+                                        previousZero = numericalArray[j];
+                                    }
+                                    outputText.append("0");
+                                }
+                                temp = numericalArray[j];
+                                loopNum++;
+                            }
+                            j++;
+                        }
+                    }
+                    else {
+                        if (newToken.hasMoreTokens() && (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion"))) {
+                            removeZero = doubleOAfter(i, inputText);
+                        }
+                        
+                        if (removeZero && (!temp.equals("thousand") && !temp.equals("million") && !temp.equals("billion"))) {
+                            outputText.delete(outputText.length() - 1, outputText.length());
+                        }
+                    
+                        int loopNum = 0, j = 0;
+                        while (loopNum == 0) {
+                            if (temp.equals(textArray[j])) {
+                                temp = numericalArray[j];
+                                if (j > 8) {
+                                    previousZero = temp;
+                                }
+                                else {
+                                    previousZero = "N/A";
+                                }
+                                loopNum++;
+                            }
+                            j++;
+                        }
                     }
                 }
                 else {
-                    if (newToken.hasMoreTokens() && (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion"))) {
-                        removeZero = doubleOAfter(i, inputText);
-                    }
-                    
-                    if (removeZero) {
-                        outputText.delete(outputText.length() - 1, outputText.length());
-                    }
-                
                     int loopNum = 0, j = 0;
                     while (loopNum == 0) {
                         if (temp.equals(textArray[j])) {
                             temp = numericalArray[j];
-                            if (j > 8) {
+                            if  (j == 9 || j > 18) {
                                 previousZero = temp;
-                            }
-                            else {
-                                previousZero = "N/A";
                             }
                             loopNum++;
                         }
                         j++;
                     }
                 }
+                outputText.append(temp);
+            
             }
-            else {
-                int loopNum = 0, j = 0;
-                while (loopNum == 0) {
-                    if (temp.equals(textArray[j])) {
-                        temp = numericalArray[j];
-                        if  (j == 9 || j > 18) {
-                            previousZero = temp;
-                        }
-                        loopNum++;
-                    }
-                    j++;
+            if (previousZero.equals(",")) {
+                if (billionZeros) {
+                    outputText.append("000,000,000");
                 }
+                else if (millionZeros) {
+                    outputText.append("000,000");
+                }
+                else {
+                    outputText.append("000");
+                }
+                
             }
-            outputText.append(temp);
-        
+            System.out.println(outputText);
         }
-    
-        System.out.println(outputText);
+        else {
+            System.out.println(errorMessage);
+        }
     }
-    else {
-        System.out.println(errorMessage);
-    }
-  }
   
     public static boolean doubleOAfter(int i, String inText) {
         StringTokenizer doubleO = new StringTokenizer(inText, " ");
