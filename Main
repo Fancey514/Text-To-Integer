@@ -72,8 +72,8 @@ public class Main {
                     millionZeros = false;                                                                   // Remove million flag
                 }
                 else if (temp.equals("hundred")) {
-                    extraZeros = addExtras(i, inputText);
-                    zeroGap = addGap(i, inputText);
+                    extraZeros = addExtras(i, inputText);                                                   // Check if extra zeros are needed to be added
+                    zeroGap = addGap(i, inputText);                                                         // Check if zeros are needed to fill a gap
                     if (billionZeros && extraZeros) {                                                       // If the current word is hundred, check if billion flag is true
                         if (!zeroGap) {
                             outputText.insert(outputText.indexOf(",") + 1, "000,000,");                     // If true, add "000,000," after the comma
@@ -114,98 +114,99 @@ public class Main {
                     }
                     else if (previousZero.equals(",")) {                                                    // Check if previousZero is a comma value
                         int j = 0, loopNum = 0;                                                             // Set variables to control the while loop
-                        while (loopNum == 0) {
-                            if (temp.equals(textArray[j])) {
-                                if (j < 9) {
-                                    previousZero = "N/A";
-                                    if (newToken.hasMoreTokens()) {
-                                        removeZero = doubleOAfter(i, inputText);
+                        while (loopNum == 0) {                                                              // loop until the loopNum variable no longer equals 0
+                            if (temp.equals(textArray[j])) {                                                // Check if the word matches the word in the current element of the textArray
+                                if (j < 9) {                                                                // Check if the element number is less than 9
+                                    previousZero = "N/A";                                                   // If so, set previousZero to "N/A"
+                                    if (newToken.hasMoreTokens()) {                                         // Check if there are more tokens after the current number
+                                        removeZero = doubleOAfter(i, inputText);                            // If so, call the doubleOAfter method to see if zeros need to be added prior to the value being added
                                     }
-                                    if (removeZero) {
-                                        if (billionZeros && !newToken.hasMoreTokens()) {
-                                            outputText.append("000,000,00");
+                                    if (removeZero) {                                                       // If true is returned
+                                        if (billionZeros && !newToken.hasMoreTokens()) {                    // And the billion flag is true and there are no more words left
+                                            outputText.append("000,000,00");                                // Add "000,000,00" to the outputText 
                                         }
-                                        else if (millionZeros && !newToken.hasMoreTokens()) {
-                                            outputText.append("000,00");
+                                        else if (millionZeros && !newToken.hasMoreTokens()) {               // However, if the million flag is true and there are no more words left
+                                            outputText.append("000,00");                                    // Add "000,00" to the outputText
                                         }
                                         else {
-                                            outputText.append("00");
+                                            outputText.append("00");                                        // Otherwise, add "00" to the outputText
                                         }
                                     }
                                     
                                 }
-                                else if (j > 8 && j < 27) {
-                                    if (j > 18) {
-                                        previousZero = numericalArray[j];
+                                else if (j > 8 && j < 27) {                                                 // For all other values
+                                    if (j > 18) {                                                           // If the element is over 18
+                                        previousZero = numericalArray[j];                                   // Set previousZero to the numerical value  of that element
                                     }
-                                    outputText.append("0");
+                                    outputText.append("0");                                                 // Add "0" after the comma in outputText
                                 }
-                                temp = numericalArray[j];
-                                loopNum++;
+                                temp = numericalArray[j];                                                   // Set temp to the numerical value of the word
+                                loopNum++;                                                                  // Increase the loopNum variable to end the loop
                             }
-                            j++;
+                            j++;                                                                            // Increase the j variable
                         }
                     }
                     else {
-                        if (newToken.hasMoreTokens() && (!temp.equals("thousand") || !temp.equals("million") || !temp.equals("billion"))) {
-                            removeZero = doubleOAfter(i, inputText);
+                        if (newToken.hasMoreTokens() && (!temp.equals("thousand") && !temp.equals("million") && !temp.equals("billion"))) {
+                            removeZero = doubleOAfter(i, inputText);                                        // Call doubleOAfter and assign result to removeZero variable if previousZero is from element 19 or above
                         }
                         
                         if (removeZero && (!temp.equals("thousand") && !temp.equals("million") && !temp.equals("billion"))) {
-                            outputText.delete(outputText.length() - 1, outputText.length());
+                            outputText.delete(outputText.length() - 1, outputText.length());                // If removeZero is true, remove the last 0
                         }
                     
-                        int loopNum = 0, j = 0;
-                        while (loopNum == 0) {
+                        int loopNum = 0, j = 0;                                                             // Set variables to control the loops
+                        while (loopNum == 0) {                                                              // Loop while loopNum is unchanged
                             if (temp.equals(textArray[j])) {
-                                temp = numericalArray[j];
-                                if (j > 8) {
-                                    previousZero = temp;
+                                temp = numericalArray[j];                                                   // Set temp to the numerical value when a matching word is found in the textArray
+                                if (j > 8) {                                                                // If the element is greater than 8
+                                    previousZero = temp;                                                    // Set previousZero to temp
                                 }
                                 else {
-                                    previousZero = "N/A";
+                                    previousZero = "N/A";                                                   // Otherwise, set previousZero to "N/A"
                                 }
-                                loopNum++;
+                                loopNum++;                                                                  // increase loopNum to end the whileloop
                             }
-                            j++;
+                            j++;                                                                            // Increase the j variable
                         }
                     }
                 }
-                else {
-                    int loopNum = 0, j = 0;
-                    while (loopNum == 0) {
-                        if (temp.equals(textArray[j])) {
-                            temp = numericalArray[j];
-                            if  (j == 9 || j > 18) {
-                                previousZero = temp;
+                else {                                                                                      // Otherwise, if there's "N/A" for previousZero
+                    int loopNum = 0, j = 0;                                                                 // Set variables to control the loop
+                    while (loopNum == 0) {                                                                  // While the loopNum variable is unchanged
+                        if (temp.equals(textArray[j])) {                                                    // if the element in the textArray matches the word
+                            temp = numericalArray[j];                                                       // Assign the element in the numericalArray to the temp variable
+                            if  (j > 18) {                                                                  // if the element is greater than 18
+                                previousZero = temp;                                                        // Assign temp to previousZero
                             }
-                            loopNum++;
+                            loopNum++;                                                                      // Increase loopNum to control the loop
                         }
-                        j++;
+                        j++;                                                                                // Increase the element nuumber variable
                     }
                 }
-                outputText.append(temp);
+                outputText.append(temp);                                                                    // Append the temp value to the outputText String
             
             }
-            if (previousZero.equals(",")) {
-                if (billionZeros) {
-                    outputText.append("000,000,000");
+            if (previousZero.equals(",")) {                                                                 // If previousZero is a comma
+                if (billionZeros) {                                                                         // And the billion flag is true
+                    outputText.append("000,000,000");                                                       // Append "000,000,000" to outputText
                 }
-                else if (millionZeros) {
-                    outputText.append("000,000");
+                else if (millionZeros) {                                                                    // Or, if the million flag is true
+                    outputText.append("000,000");                                                           // Append "000,000" to outputText
                 }
                 else {
-                    outputText.append("000");
+                    outputText.append("000");                                                               // Otherwise, append "000" to the outputText
                 }
                 
             }
-            System.out.println(outputText);
+            System.out.println(outputText);                                                                 // Display the full string on the screen
         }
         else {
-            System.out.println(errorMessage);
+            System.out.println(errorMessage);                                                               // Otherwise, if continueConvert is set to false, display the error message
         }
     }
-  
+    
+    // Method for determining if a single digit number is followed by the word hundred
     public static boolean doubleOAfter(int i, String inText) {
         StringTokenizer doubleO = new StringTokenizer(inText, " ");
         String doubleTemp = "";
@@ -222,6 +223,7 @@ public class Main {
         return removeZero;
     }
     
+    // Method for determining if more zeros needed to be added to the output
     public static boolean addExtras(int i, String inText) {
         boolean extraZeros = true, billionVal = false, millionVal = false, thouVal = false;
         StringTokenizer zeroToken = new StringTokenizer(inText, " ");
@@ -246,6 +248,7 @@ public class Main {
         return extraZeros;
     }
     
+    // Method to determine if a set of zeros need to fill a gap
     public static boolean addGap(int i, String inText) {
         boolean zeroGap = false, billionVal = false, millionVal = false, thouVal = false;
         StringTokenizer gapToken = new StringTokenizer(inText, " ");
