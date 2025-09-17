@@ -59,8 +59,8 @@ public class Main {
             }
             
             if (tempVerify.equals(textArray[lastIndex]) && tempVerify.equals(previousVerify)) {             // Check that the current token doesn't match the previous token
-                errorMessage = "No numbers back-to-back.";                                                  // Set the errorMessage variable if it does
-                continueConvert = false;                                                                    // Set the continueConvert boolean to false so it doesn't attempt to convert to a number                
+              errorMessage = "No numbers back-to-back.";                                                    // Set the errorMessage variable if it does
+              continueConvert = false;                                                                      // Set the continueConvert boolean to false so it doesn't attempt to convert to a number                
             }
             
             if (!numFound) {
@@ -250,7 +250,7 @@ public class Main {
         boolean extraZeros = true, billionVal = false, millionVal = false, thouVal = false;   // Declare and initialize boolean variables
         StringTokenizer zeroToken = new StringTokenizer(inText, " ");                         // Set a new Tokenizer
         String zeroTemp = "";                                                                 // Declare and initialize a String variable
-        int k = 0;                                                                            // Declare and initialize an integer
+        int k = 0;                                                                            // Declare and initialize an integer variable
         while (zeroToken.hasMoreTokens() && (k <= i + 3)) {                                   // Loop while there are more tokens to process and the k variable is equal to 3 tokens past the current token
             zeroTemp = zeroToken.nextToken();                                                 // Set the zeroTemp value to the next token
             if (zeroTemp.equals("billion")) {
@@ -272,25 +272,25 @@ public class Main {
     
     // Method to determine if a set of zeros need to fill a gap
     public static boolean addGap(int i, String inText) {
-        boolean zeroGap = false, billionVal = false, millionVal = false, thouVal = false;
-        StringTokenizer gapToken = new StringTokenizer(inText, " ");
-        String gapTemp = "";
-        int k = 0;
-        while (gapToken.hasMoreTokens() && (k <= i + 3)) {
-            gapTemp = gapToken.nextToken();
+        boolean zeroGap = false, billionVal = false, millionVal = false, thouVal = false;   // Declare and initialize boolean variables
+        StringTokenizer gapToken = new StringTokenizer(inText, " ");                        // Set new Tokenizer
+        String gapTemp = "";                                                                // Declare and initialize String variable
+        int k = 0;                                                                          // Declare and initialize integer variable
+        while (gapToken.hasMoreTokens() && (k <= i + 3)) {                                  // Loop while there are more tokens to process and k variable is equal up to 3 tokens past the current main token
+            gapTemp = gapToken.nextToken();                                                 // Set gapTemp to current token
             if (gapTemp.equals("billion")) {
-                billionVal = true;
+                billionVal = true;                                                          // Set billionVal to true if the word "billion" appears
             }
             else if (gapTemp.equals("million")) {
-                millionVal = true;
+                millionVal = true;                                                          // Set millionVal to true if the word "million" appears
             }
             else if (gapTemp.equals("thousand")) {
-                thouVal = true;
+                thouVal = true;                                                             // Set thouVal to true if the word "thousand" appears
             }
         }
         if (billionVal && !millionVal && thouVal) {
-            zeroGap = true;
+            zeroGap = true;                                                                 // Set zeroGap to true if billionVal and thouVal are true and millionVal is false
         }
-        return zeroGap;
+        return zeroGap;                                                                     // Return the zeroGap value
     }
 }
